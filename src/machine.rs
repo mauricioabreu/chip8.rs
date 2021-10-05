@@ -50,8 +50,40 @@ impl Machine {
                 let vx = self.v[op_code.x];
                 let vy = self.v[op_code.y];
 
-                let x = vx % 64;
-                let y = vy % 32;
+                // handle wrapping
+                let start_x = vx % 64;
+                let start_y = vy % 32;
+
+                self.v[0xF] = false;
+
+                let mut i = 0;
+                for row in 0..op_code.n {
+                    let y_coord = start_y + row;
+
+                    // break when reaches the edge
+                    if y >= 32 {
+                        break;
+                    }
+
+                    let sprite = self.ram[self.i + i];
+
+                    for column in 0..8 {
+                        let x_coord = start_x + column;
+                        // break when reaches the edge
+                        if x_coord >= 64 {
+                            break;
+                        }
+
+                        /*
+                        If the current pixel in the sprite row is on and the pixel
+                        at coordinates X,Y on the screen is also on,
+                        turn off the pixel and set VF to 1
+                        */
+                        let current_pixel = self.display[x][y];
+                    }
+
+                    i += 1;
+                }
             }
         }
     }
