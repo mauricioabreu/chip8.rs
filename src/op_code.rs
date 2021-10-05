@@ -4,7 +4,7 @@ pub struct OpCode {
     pub y: u8,
     pub n: u8,
     pub nn: u8,
-    pub nnnn: u16,
+    pub nnn: u16,
 }
 
 impl OpCode {
