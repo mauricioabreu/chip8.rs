@@ -1,6 +1,6 @@
 pub struct OpCode {
     pub op: u8,
-    pub x: u8.
+    pub x: u8,
     pub y: u8,
     pub n: u8,
     pub nn: u8,

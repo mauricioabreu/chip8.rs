@@ -14,7 +14,7 @@ impl Machine {
             pc: 0x200,
             i: 0,
             v: [0; 16],
-        }
+        };
 
         machine
     }
@@ -22,8 +22,8 @@ impl Machine {
     pub fn decode(self: &mut Machine) -> OpCode {
         let op_code = OpCode::from_hex(
             self.ram[usize::from(self.pc)],
-            self.ram[usize::from(self.pc + 1)]
-        )
+            self.ram[usize::from(self.pc + 1)],
+        );
         self.pc += 2;
 
         op_code
@@ -33,21 +33,25 @@ impl Machine {
         match op_code.op {
             0u8 => {
                 self.display = [[false; 32]; 64];
-            },
+            }
             0x1u8 => {
                 self.pc = op_code.nnn;
-            },
+            }
             0x6u8 => {
                 self.v[op_code.x] = op_code.nn;
-            },
+            }
             0x7u8 => {
                 self.v[op_code.x] += op_code.nn;
-            },
+            }
             0xAu8 => {
                 self.i = op_code.nnn;
-            },
+            }
             0xDu8 => {
-                
+                let vx = self.v[op_code.x];
+                let vy = self.v[op_code.y];
+
+                let x = vx % 64;
+                let y = vy % 32;
             }
         }
     }
