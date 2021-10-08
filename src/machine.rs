@@ -1,3 +1,5 @@
+use crate::op_code::OpCode;
+
 const DISPLAY_WIDTH: usize = 64;
 const DISPLAY_HEIGHT: usize = 64;
 
@@ -6,12 +8,12 @@ pub struct Machine {
     display: [[bool; 32]; 64],
     pc: u16,
     i: u16,
-    v: [u8; u16],
+    v: [u8; 16],
 }
 
 impl Machine {
     pub fn new() -> Self {
-        let mut machine = Self {
+        let machine = Self {
             memory: [0; 4096],
             display: [[false; 32]; 64],
             pc: 0x200,
@@ -22,8 +24,14 @@ impl Machine {
         machine
     }
 
-    pub fn decode(self: &mut Machine) -> OpCode {
-        let op_code = OpCode::from_hex(
+    pub fn load_rom(self: &mut Machine, data: Vec<u8>) {
+        for (i, b) in data.iter().enumerate() {
+            self.memory[0x200 + i] = *b;
+        }
+    }
+
+    pub fn decode_op(self: &mut Machine) -> OpCode {
+        let op_code = OpCode::from_bytes(
             self.memory[usize::from(self.pc)],
             self.memory[usize::from(self.pc + 1)],
         );
@@ -32,27 +40,42 @@ impl Machine {
         op_code
     }
 
-    pub fn execute(self: &mut Machine, op_code: OpCode) {
+    pub fn execute_op(self: &mut Machine, op_code: OpCode) {
+        let vx = self.fetch_vx(&op_code);
+
         match op_code.op {
             0u8 => {
                 self.display = [[false; 32]; 64];
-            }
+            },
             0x1u8 => {
                 self.pc = op_code.nnn;
-            }
+            },
             0x6u8 => {
-                self.v[op_code.x as usize] = op_code.nn;
-            }
+                self.register_vx(&op_code, op_code.nn);
+            },
             0x7u8 => {
-                self.v[op_code.x as usize] += op_code.nn;
-            }
+                self.register_vx(&op_code, vx.wrapping_add(op_code.nn));
+            },
             0xAu8 => {
                 self.i = op_code.nnn;
-            }
+            },
             0xDu8 => {
-                self.draw_on_display(self, op_code);
-            }
+                self.draw_on_display(op_code);
+            },
+            _ => panic!("OpCode not implemented!"),
         }
+    }
+
+    fn register_vx(self: &mut Machine, op_code: &OpCode, value: u8) {
+        self.v[usize::from(op_code.x)] = value;
+    }
+
+    fn fetch_vx(self: &mut Machine, op_code: &OpCode) -> u8 {
+        self.v[usize::from(op_code.x)]
+    }
+
+    fn fetch_vy(self: &mut Machine, op_code: &OpCode) -> u8 {
+        self.v[usize::from(op_code.y)]
     }
 
     fn draw_on_display(self: &mut Machine, op_code: OpCode) {
@@ -62,24 +85,24 @@ impl Machine {
         at coordinates X,Y on the screen is also on,
         turn off the pixel (XOR).
         */
-        let vx = self.v[op_code.x as usize];
-        let vy = self.v[op_code.y as usize];
+        let vx = self.fetch_vx(&op_code);
+        let vy = self.fetch_vy(&op_code);
 
         // handle wrapping
-        let start_x = vx % DISPLAY_WIDTH;
-        let start_y = vy % DISPLAY_HEIGHT;
+        let start_x = usize::from(vx) % DISPLAY_WIDTH;
+        let start_y = usize::from(vy) % DISPLAY_HEIGHT;
 
-        self.v[0xF] = false;
+        self.v[0xF] = usize::from(false) as u8;
 
         for row in 0..op_code.n {
-            let y_coord = start_y + row;
+            let y_coord = start_y + row as usize;
 
             // break when reaches the edge
             if y_coord >= 32 {
                 break;
             }
 
-            let sprite = self.memory[self.i + row as u16];
+            let sprite = self.memory[usize::from(self.i + row as u16)];
 
             for column in 0..8 {
                 let x_coord = start_x + column;
@@ -88,12 +111,12 @@ impl Machine {
                     break;
                 }
 
-                let current_pixel = self.display[x][y];
-                let new_pixel = (sprite >> (7 - column)) & 1;
-                self.display[x][y] = current_pixel ^ new_pixel;
+                let current_pixel = self.display[x_coord][y_coord];
+                let new_pixel = (sprite >> (7 - column)) & 1 != 0;
+                self.display[x_coord][y_coord] = current_pixel ^ new_pixel;
 
-                if current_pixel != 0 && self.display[x][y] == 0 {
-                    self.v[0xF] = true;
+                if current_pixel != true && self.display[x_coord][y_coord] == false {
+                    self.v[0xF] = usize::from(true) as u8;
                 }
             }
         }

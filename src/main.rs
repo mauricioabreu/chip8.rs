@@ -1,3 +1,22 @@
+use std::env;
+use std::fs::File;
+use std::io::Read;
+use machine::Machine;
+
+mod machine;
+mod op_code;
+
 fn main() {
-    println!("Hello, world!");
+    let args: Vec<String> = env::args().collect();
+    let filename = args.get(1).unwrap();
+    let mut f = File::open(filename).unwrap();
+    let mut data = Vec::<u8>::new();
+    f.read_to_end(&mut data).expect("File not found...");
+    let mut machine = Machine::new();
+    machine.load_rom(data);
+
+    loop {
+        let op = machine.decode_op();
+        machine.execute_op(op);
+    }
 }

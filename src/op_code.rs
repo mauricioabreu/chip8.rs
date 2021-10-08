@@ -8,7 +8,7 @@ pub struct OpCode {
 }
 
 impl OpCode {
-    pub fn from_hex(fbyte: u8, sbyte: u8) -> Self {
+    pub fn from_bytes(fbyte: u8, sbyte: u8) -> Self {
         Self {
             op: (fbyte >> 4) & 0xF,
             x: fbyte & 0xF,
