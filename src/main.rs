@@ -22,6 +22,6 @@ fn main() {
     loop {
         let op = machine.decode_op();
         machine.execute_op(op);
-        display.draw(&machine.read_display());
+        display.draw(machine.read_display());
     }
 }
