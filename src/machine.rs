@@ -46,22 +46,22 @@ impl Machine {
         match op_code.op {
             0u8 => {
                 self.display = [[false; 32]; 64];
-            },
+            }
             0x1u8 => {
                 self.pc = op_code.nnn;
-            },
+            }
             0x6u8 => {
                 self.register_vx(&op_code, op_code.nn);
-            },
+            }
             0x7u8 => {
                 self.register_vx(&op_code, vx.wrapping_add(op_code.nn));
-            },
+            }
             0xAu8 => {
                 self.i = op_code.nnn;
-            },
+            }
             0xDu8 => {
                 self.draw_on_display(op_code);
-            },
+            }
             _ => panic!("OpCode not implemented!"),
         }
     }
@@ -76,6 +76,10 @@ impl Machine {
 
     fn fetch_vy(self: &mut Machine, op_code: &OpCode) -> u8 {
         self.v[usize::from(op_code.y)]
+    }
+
+    pub fn read_display(self: &mut Machine) -> &[[bool; 32]; 64] {
+        &self.display
     }
 
     fn draw_on_display(self: &mut Machine, op_code: OpCode) {
