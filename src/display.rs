@@ -18,11 +18,11 @@ impl Display {
         let video = sdl_context.video().unwrap();
 
         let scale = 10;
-        let screen_height = 64 * scale;
-        let screen_width = 32 * scale;
+        let screen_width = 64 * scale;
+        let screen_height = 32 * scale;
 
         let window = video
-            .window("chip8", screen_height, screen_width)
+            .window("chip8", screen_width, screen_height)
             .build()
             .unwrap();
 
@@ -46,8 +46,8 @@ impl Display {
                 if *row {
                     let x = ((x as u32) * self.scale) as i32;
                     let y = ((y as u32) * self.scale) as i32;
-                    let height = self.scale;
                     let width = self.scale;
+                    let height = self.scale;
 
                     self.canvas
                         .fill_rect(Rect::new(x, y, width, height))

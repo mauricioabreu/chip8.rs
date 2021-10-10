@@ -1,7 +1,7 @@
 use crate::op_code::OpCode;
 
 const DISPLAY_WIDTH: usize = 64;
-const DISPLAY_HEIGHT: usize = 64;
+const DISPLAY_HEIGHT: usize = 32;
 
 pub struct Machine {
     memory: [u8; 4096],
@@ -93,8 +93,8 @@ impl Machine {
         let vy = self.fetch_vy(&op_code);
 
         // handle wrapping
-        let start_x = usize::from(vx) % DISPLAY_HEIGHT;
-        let start_y = usize::from(vy) % DISPLAY_WIDTH;
+        let start_x = usize::from(vx) % DISPLAY_WIDTH;
+        let start_y = usize::from(vy) % DISPLAY_HEIGHT;
 
         self.v[0xF] = usize::from(false) as u8;
 
