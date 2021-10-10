@@ -49,7 +49,7 @@ impl Machine {
                 self.display = [[false; 32]; 64];
             }
             0x1u8 => {
-                println!("00EE: jump");
+                println!("00EE: jump to {}", op_code.nnn);
                 self.pc = op_code.nnn;
             }
             0x6u8 => {
