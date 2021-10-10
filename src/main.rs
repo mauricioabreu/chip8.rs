@@ -3,6 +3,7 @@ use machine::Machine;
 use std::env;
 use std::fs::File;
 use std::io::Read;
+use std::{thread, time::Duration};
 
 mod display;
 mod machine;
@@ -23,5 +24,6 @@ fn main() {
         let op = machine.decode_op();
         machine.execute_op(op);
         display.draw(machine.read_display());
+        thread::sleep(Duration::from_secs(1));
     }
 }

@@ -45,18 +45,23 @@ impl Machine {
 
         match op_code.op {
             0u8 => {
+                println!("00E0: clear screen");
                 self.display = [[false; 32]; 64];
             }
             0x1u8 => {
+                println!("00EE: jump");
                 self.pc = op_code.nnn;
             }
             0x6u8 => {
+                println!("6XNN: set value {} to Vx{}", op_code.nn, op_code.x);
                 self.register_vx(&op_code, op_code.nn);
             }
             0x7u8 => {
+                println!("7XNN: add the value {} to Vx{}", op_code.nn, op_code.x);
                 self.register_vx(&op_code, vx.wrapping_add(op_code.nn));
             }
             0xAu8 => {
+                println!("ANNN: set index register I {}", op_code.nnn);
                 self.i = op_code.nnn;
             }
             0xDu8 => {
@@ -91,6 +96,7 @@ impl Machine {
         */
         let vx = self.fetch_vx(&op_code);
         let vy = self.fetch_vy(&op_code);
+        println!("DXYN: draw on screen at Vx{} Vy{}", vx, vy);
 
         // handle wrapping
         let start_x = usize::from(vx) % DISPLAY_WIDTH;
