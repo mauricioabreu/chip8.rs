@@ -93,8 +93,8 @@ impl Machine {
         let vy = self.fetch_vy(&op_code);
 
         // handle wrapping
-        let start_x = usize::from(vx) % DISPLAY_WIDTH;
-        let start_y = usize::from(vy) % DISPLAY_HEIGHT;
+        let start_x = usize::from(vx) % DISPLAY_HEIGHT;
+        let start_y = usize::from(vy) % DISPLAY_WIDTH;
 
         self.v[0xF] = usize::from(false) as u8;
 
