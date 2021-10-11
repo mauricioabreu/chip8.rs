@@ -102,7 +102,8 @@ impl Machine {
         let start_x = usize::from(vx) % DISPLAY_WIDTH;
         let start_y = usize::from(vy) % DISPLAY_HEIGHT;
 
-        self.v[0xF] = usize::from(false) as u8;
+        let mut flagged = false;
+        self.v[0xF] = usize::from(flagged) as u8;
 
         for row in 0..op_code.n {
             let y_coord = start_y + row as usize;
@@ -124,11 +125,23 @@ impl Machine {
                 let current_pixel = self.display[x_coord][y_coord];
                 let new_pixel = (sprite >> (7 - column)) & 1 != 0;
                 self.display[x_coord][y_coord] = current_pixel ^ new_pixel;
+                flagged = flagged || (current_pixel && new_pixel);
+            }
+        }
+        self.v[0xF] = usize::from(flagged) as u8;
+        self.debug_draw();
+    }
 
-                if current_pixel != true && self.display[x_coord][y_coord] == false {
-                    self.v[0xF] = usize::from(true) as u8;
+    fn debug_draw(self: &mut Machine) {
+        for y in 0..64 {
+            for x in 0..32 {
+                if self.display[y][x] == false {
+                    print!("_");
+                } else {
+                    print!("#");
                 }
             }
+            println!();
         }
     }
 }
