@@ -23,6 +23,7 @@ impl Display {
 
         let window = video
             .window("chip8", screen_width, screen_height)
+            .position_centered()
             .build()
             .unwrap();
 
