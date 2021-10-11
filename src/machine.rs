@@ -133,9 +133,9 @@ impl Machine {
     }
 
     fn debug_draw(self: &mut Machine) {
-        for y in 0..64 {
-            for x in 0..32 {
-                if self.display[y][x] == false {
+        for y in 0..32 {
+            for x in 0..64 {
+                if self.display[x][y] == false {
                     print!("_");
                 } else {
                     print!("#");
