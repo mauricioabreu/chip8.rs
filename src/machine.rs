@@ -57,7 +57,7 @@ impl Machine {
                 self.register_vx(&op_code, op_code.nn);
             }
             0x7u8 => {
-                println!("7XNN: add the value {} to Vx{}", op_code.nn, op_code.x);
+                println!("7XNN: add the value {} to Vx({}){}", op_code.nn, vx, op_code.x);
                 self.register_vx(&op_code, vx.wrapping_add(op_code.nn));
             }
             0xAu8 => {
@@ -96,7 +96,7 @@ impl Machine {
         */
         let vx = self.fetch_vx(&op_code);
         let vy = self.fetch_vy(&op_code);
-        println!("DXYN: draw on screen at Vx{} Vy{}", vx, vy);
+        println!("DXYN: draw {} on screen at Vx{} Vy{}", op_code.n, vx, vy);
 
         // handle wrapping
         let start_x = usize::from(vx) % DISPLAY_WIDTH;
