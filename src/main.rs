@@ -1,3 +1,5 @@
+extern crate sdl2;
+
 use machine::Machine;
 use std::env;
 use std::fs::File;
