@@ -52,7 +52,7 @@ impl Display {
 
                     self.canvas
                         .fill_rect(Rect::new(x, y, width, height))
-                        .expect("Failed to draw on screen")
+                        .expect("Failed to draw on screen");
                 }
             }
         }
