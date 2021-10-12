@@ -1,5 +1,3 @@
-extern crate sdl2;
-
 use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 use sdl2::render::Canvas;
