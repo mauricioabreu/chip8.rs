@@ -65,6 +65,7 @@ impl Machine {
 
     pub fn execute_op(self: &mut Machine, op_code: OpCode) {
         let vx = self.fetch_vx(&op_code);
+        let vy = self.fetch_vy(&op_code);
 
         match op_code.op {
             0u8 => {
@@ -74,6 +75,30 @@ impl Machine {
             0x1u8 => {
                 println!("00EE: jump to {}", op_code.nnn);
                 self.pc = op_code.nnn;
+            }
+            0x3u8 => {
+                println!("3XNN: skip when Vx{} == NN{}", vx, op_code.nn);
+                if vx == op_code.nn {
+                    self.pc += 2;
+                }
+            }
+            0x4u8 => {
+                println!("4XNN: skip when Vx{} != NN{}", vx, op_code.nn);
+                if vx != op_code.nn {
+                    self.pc += 2;
+                }
+            }
+            0x5u8 => {
+                println!("5XY0: skip when Vx{} == Vy{}", vx, vy);
+                if vx == vy {
+                    self.pc += 2;
+                } 
+            }
+            0x9u8 => {
+                println!("9XY0: skip when Vx{} != Vy{}", vx, vy);
+                if vx != vy {
+                    self.pc += 2;
+                }
             }
             0x6u8 => {
                 println!("6XNN: set value {} to Vx{}", op_code.nn, op_code.x);
