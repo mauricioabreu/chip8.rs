@@ -4,6 +4,9 @@ use std::fs::File;
 use std::io::Read;
 use std::time::{Duration, Instant};
 
+use sdl2::event::Event;
+use sdl2::keyboard::Keycode;
+
 mod display;
 mod machine;
 mod op_code;
@@ -22,7 +25,20 @@ fn main() {
     let mut last_op_time = Instant::now();
     let mut last_display_time = Instant::now();
 
-    loop {
+    let mut events = sdl_context.event_pump().unwrap();
+
+    'event_loop: loop {
+        for event in events.poll_iter() {
+            match event {
+                Event::Quit { .. }
+                | Event::KeyDown {
+                    keycode: Some(Keycode::Escape),
+                    ..
+                } => break 'event_loop,
+                _ => {}
+            }
+        }
+
         if Instant::now() - last_op_time > Duration::from_millis(2) {
             let op = machine.decode_op();
             machine.execute_op(op);
