@@ -93,7 +93,7 @@ impl Machine {
             0xDu8 => {
                 self.draw_on_display(op_code);
             }
-            _ => panic!("OpCode not implemented!"),
+            _ => panic!("OpCode {:#04x} not implemented!", op_code.op),
         }
     }
 
