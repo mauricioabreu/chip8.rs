@@ -15,7 +15,7 @@ pub struct Display {
 
 impl Display {
     pub fn new(sdl_context: &Sdl) -> Self {
-        let video = sdl_context.video().unwrap();
+        let video = sdl_context.video().expect("Failed to init sdl");
 
         let scale = 10;
         let screen_width = 64 * scale;
@@ -25,7 +25,7 @@ impl Display {
             .window("chip8", screen_width, screen_height)
             .position_centered()
             .build()
-            .unwrap();
+            .expect("Failed to create window");
 
         let canvas = window.into_canvas().build().unwrap();
 
