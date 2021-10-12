@@ -57,7 +57,10 @@ impl Machine {
                 self.register_vx(&op_code, op_code.nn);
             }
             0x7u8 => {
-                println!("7XNN: add the value {} to Vx({}){}", op_code.nn, vx, op_code.x);
+                println!(
+                    "7XNN: add the value {} to Vx({}){}",
+                    op_code.nn, vx, op_code.x
+                );
                 self.register_vx(&op_code, vx.wrapping_add(op_code.nn));
             }
             0xAu8 => {
