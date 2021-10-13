@@ -28,6 +28,8 @@ pub struct Machine {
     pc: u16,
     i: u16,
     v: [u8; 16],
+    delay_timer: u8,
+    sound_timer: u8,
 }
 
 impl Machine {
@@ -38,6 +40,8 @@ impl Machine {
             pc: 0x200,
             i: 0,
             v: [0; 16],
+            delay_timer: 0,
+            sound_timer: 0,
         };
 
         for (n, font) in FONTS.iter().enumerate() {
@@ -92,7 +96,7 @@ impl Machine {
                 println!("5XY0: skip when Vx{} == Vy{}", vx, vy);
                 if vx == vy {
                     self.pc += 2;
-                } 
+                }
             }
             0x9u8 => {
                 println!("9XY0: skip when Vx{} != Vy{}", vx, vy);
@@ -111,35 +115,45 @@ impl Machine {
                 );
                 self.register_vx(&op_code, vx.wrapping_add(op_code.nn));
             }
-            0x8u8 => {
-                match op_code.n {
-                    0x0u8 => {
-                        self.register_vx(&op_code, vy);
-                    }
-                    0x1u8 => {
-                        self.register_vx(&op_code, vx | vy);
-                    }
-                    0x2u8 => {
-                        self.register_vx(&op_code, vx & vy);
-                    }
-                    0x3u8 => {
-                        self.register_vx(&op_code, vx ^ vy);
-                    }
-                    0x4u8 => {
-                        self.register_vx(&op_code, vx.wrapping_add(vy));
-                        self.v[0xF] = usize::from(self.fetch_vx(&op_code) < vx) as u8;
-                    }
-                    0x5u8 => {
-                        self.register_vx(&op_code, vx.wrapping_sub(vy));
-                        self.v[0xF] = usize::from(vx < vy) as u8;
-                    }
-                    0x7u8 => {
-                        self.register_vx(&op_code, vy.wrapping_sub(vx));
-                        self.v[0xF] = usize::from(vx < vy) as u8;
-                    }
-                    _ => panic!("OpCode {:#04x}{} not implemented!", op_code.op, op_code.n)
+            0x8u8 => match op_code.n {
+                0x0u8 => {
+                    self.register_vx(&op_code, vy);
                 }
-            }
+                0x1u8 => {
+                    self.register_vx(&op_code, vx | vy);
+                }
+                0x2u8 => {
+                    self.register_vx(&op_code, vx & vy);
+                }
+                0x3u8 => {
+                    self.register_vx(&op_code, vx ^ vy);
+                }
+                0x4u8 => {
+                    self.register_vx(&op_code, vx.wrapping_add(vy));
+                    self.v[0xF] = usize::from(self.fetch_vx(&op_code) < vx) as u8;
+                }
+                0x5u8 => {
+                    self.register_vx(&op_code, vx.wrapping_sub(vy));
+                    self.v[0xF] = usize::from(vx < vy) as u8;
+                }
+                0x7u8 => {
+                    self.register_vx(&op_code, vy.wrapping_sub(vx));
+                    self.v[0xF] = usize::from(vx < vy) as u8;
+                }
+                0xFu8 => match op_code.nn {
+                    0x07u8 => {
+                        self.register_vx(&op_code, self.delay_timer);
+                    }
+                    0x15u8 => {
+                        self.delay_timer = vx;
+                    }
+                    0x18u8 => {
+                        self.sound_timer = vx;
+                    }
+                    _ => panic!("OpCode {:#04x}{} not implemented!", op_code.op, op_code.nn),
+                },
+                _ => panic!("OpCode {:#04x}{} not implemented!", op_code.op, op_code.n),
+            },
             0xAu8 => {
                 println!("ANNN: set index register I {}", op_code.nnn);
                 self.i = op_code.nnn;
@@ -222,6 +236,12 @@ impl Machine {
                 }
             }
             println!();
+        }
+    }
+
+    pub fn tick(self: &mut Machine) {
+        if self.delay_timer > 0 {
+            self.delay_timer -= 1;
         }
     }
 }

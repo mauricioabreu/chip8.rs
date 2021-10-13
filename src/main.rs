@@ -49,5 +49,7 @@ fn main() {
             display.draw(machine.read_display());
             last_display_time = Instant::now();
         }
+
+        machine.tick();
     }
 }
