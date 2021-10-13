@@ -111,6 +111,35 @@ impl Machine {
                 );
                 self.register_vx(&op_code, vx.wrapping_add(op_code.nn));
             }
+            0x8u8 => {
+                match op_code.n {
+                    0x0u8 => {
+                        self.register_vx(&op_code, vy);
+                    }
+                    0x1u8 => {
+                        self.register_vx(&op_code, vx | vy);
+                    }
+                    0x2u8 => {
+                        self.register_vx(&op_code, vx & vy);
+                    }
+                    0x3u8 => {
+                        self.register_vx(&op_code, vx ^ vy);
+                    }
+                    0x4u8 => {
+                        self.register_vx(&op_code, vx.wrapping_add(vy));
+                        self.v[0xF] = usize::from(self.fetch_vx(&op_code) < vx) as u8;
+                    }
+                    0x5u8 => {
+                        self.register_vx(&op_code, vx.wrapping_sub(vy));
+                        self.v[0xF] = usize::from(vx < vy) as u8;
+                    }
+                    0x7u8 => {
+                        self.register_vx(&op_code, vy.wrapping_sub(vx));
+                        self.v[0xF] = usize::from(vx < vy) as u8;
+                    }
+                    _ => panic!("OpCode {:#04x}{} not implemented!", op_code.op, op_code.n)
+                }
+            }
             0xAu8 => {
                 println!("ANNN: set index register I {}", op_code.nnn);
                 self.i = op_code.nnn;
