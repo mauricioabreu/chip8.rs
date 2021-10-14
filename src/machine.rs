@@ -187,6 +187,16 @@ impl Machine {
                     self.memory[usize::from(self.i + 1)] = digits[1];
                     self.memory[usize::from(self.i + 2)] = digits[2];
                 }
+                0x55u8 => {
+                    for i in 0..usize::from(op_code.x + 1) {
+                        self.memory[usize::from(self.i) + i] = self.v[i];
+                    }
+                }
+                0x65u8 => {
+                    for i in 0..usize::from(op_code.x + 1) {
+                        self.v[i] = self.memory[usize::from(self.i) + i];
+                    }
+                }
                 _ => panic!("OpCode {:#04x}{} not implemented!", op_code.op, op_code.nn),
             },
             _ => panic!("OpCode {:#04x} not implemented!", op_code.op),
