@@ -153,11 +153,11 @@ impl Machine {
                 }
                 0x5u8 => {
                     self.register_vx(&op_code, vx.wrapping_sub(vy));
-                    self.v[0xF] = usize::from(vx < vy) as u8;
+                    self.v[0xF] = usize::from(vx > vy) as u8;
                 }
                 0x7u8 => {
                     self.register_vx(&op_code, vy.wrapping_sub(vx));
-                    self.v[0xF] = usize::from(vx < vy) as u8;
+                    self.v[0xF] = usize::from(vx > vy) as u8;
                 }
                 0x6u8 => {
                     self.register_vx(&op_code, vx >> 1); // shift 1 bit right
@@ -165,7 +165,7 @@ impl Machine {
                 }
                 0x8u8 => {
                     self.register_vx(&op_code, vx << 1); // shift 1 bit left
-                    self.v[0xF] = usize::from(vx & 0b00000000u8 != 0) as u8;
+                    self.v[0xF] = usize::from(vx & 0b10000000u8 != 0) as u8;
                 }
                 _ => panic!("OpCode {:#04x}{} not implemented!", op_code.op, op_code.n),
             },
