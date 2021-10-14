@@ -30,6 +30,7 @@ pub struct Machine {
     v: [u8; 16],
     delay_timer: u8,
     sound_timer: u8,
+    keypad: [bool; 16],
 }
 
 impl Machine {
@@ -42,6 +43,7 @@ impl Machine {
             v: [0; 16],
             delay_timer: 0,
             sound_timer: 0,
+            keypad: [false; 16],
         };
 
         for (n, font) in FONTS.iter().enumerate() {
@@ -150,6 +152,23 @@ impl Machine {
                     0x18u8 => {
                         self.sound_timer = vx;
                     }
+                    0x0Au8 => {
+                        // Block instruction and wait for key input.
+                        // If a key is not pressed, the PC should be decremented
+                        // because we increment PC every instruction we fetch.
+                        let mut key_pressed = false;
+                        for (i, k) in self.keypad.iter().enumerate() {
+                            if *k {
+                                self.register_vx(&op_code, i as u8); // set index of first pressed key
+                                key_pressed = true;
+                                break;
+                            }
+                        }
+
+                        if !key_pressed {
+                            self.pc -= 2;
+                        }
+                    }
                     _ => panic!("OpCode {:#04x}{} not implemented!", op_code.op, op_code.nn),
                 },
                 _ => panic!("OpCode {:#04x}{} not implemented!", op_code.op, op_code.n),
@@ -243,5 +262,13 @@ impl Machine {
         if self.delay_timer > 0 {
             self.delay_timer -= 1;
         }
+    }
+
+    pub fn keydown(self: &mut Machine, key: usize) {
+        self.keypad[key] = true;
+    }
+
+    pub fn keyup(self: &mut Machine, key: usize) {
+        self.keypad[key] = false;
     }
 }

@@ -1,3 +1,4 @@
+use keypad::*;
 use machine::Machine;
 use std::env;
 use std::fs::File;
@@ -8,6 +9,7 @@ use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 
 mod display;
+mod keypad;
 mod machine;
 mod op_code;
 
@@ -35,6 +37,22 @@ fn main() {
                     keycode: Some(Keycode::Escape),
                     ..
                 } => break 'event_loop,
+                Event::KeyDown {
+                    keycode: Some(keycode),
+                    ..
+                } => {
+                    if let Some(keyindex) = scan_key(keycode) {
+                        machine.keydown(keyindex)
+                    }
+                }
+                Event::KeyUp {
+                    keycode: Some(keycode),
+                    ..
+                } => {
+                    if let Some(keyindex) = scan_key(keycode) {
+                        machine.keyup(keyindex)
+                    }
+                }
                 _ => {}
             }
         }
