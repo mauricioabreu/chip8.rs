@@ -142,38 +142,6 @@ impl Machine {
                     self.register_vx(&op_code, vy.wrapping_sub(vx));
                     self.v[0xF] = usize::from(vx < vy) as u8;
                 }
-                0xFu8 => match op_code.nn {
-                    0x07u8 => {
-                        self.register_vx(&op_code, self.delay_timer);
-                    }
-                    0x15u8 => {
-                        self.delay_timer = vx;
-                    }
-                    0x18u8 => {
-                        self.sound_timer = vx;
-                    }
-                    0x0Au8 => {
-                        // Block instruction and wait for key input.
-                        // If a key is not pressed, the PC should be decremented
-                        // because we increment PC every instruction we fetch.
-                        let mut key_pressed = false;
-                        for (i, k) in self.keypad.iter().enumerate() {
-                            if *k {
-                                self.register_vx(&op_code, i as u8); // set index of first pressed key
-                                key_pressed = true;
-                                break;
-                            }
-                        }
-
-                        if !key_pressed {
-                            self.pc -= 2;
-                        }
-                    }
-                    0x29u8 => {
-                        self.i = vx as u16 * 5;
-                    }
-                    _ => panic!("OpCode {:#04x}{} not implemented!", op_code.op, op_code.nn),
-                },
                 _ => panic!("OpCode {:#04x}{} not implemented!", op_code.op, op_code.n),
             },
             0xAu8 => {
@@ -183,6 +151,38 @@ impl Machine {
             0xDu8 => {
                 self.draw_on_display(op_code);
             }
+            0xFu8 => match op_code.nn {
+                0x07u8 => {
+                    self.register_vx(&op_code, self.delay_timer);
+                }
+                0x15u8 => {
+                    self.delay_timer = vx;
+                }
+                0x18u8 => {
+                    self.sound_timer = vx;
+                }
+                0x0Au8 => {
+                    // Block instruction and wait for key input.
+                    // If a key is not pressed, the PC should be decremented
+                    // because we increment PC every instruction we fetch.
+                    let mut key_pressed = false;
+                    for (i, k) in self.keypad.iter().enumerate() {
+                        if *k {
+                            self.register_vx(&op_code, i as u8); // set index of first pressed key
+                            key_pressed = true;
+                            break;
+                        }
+                    }
+
+                    if !key_pressed {
+                        self.pc -= 2;
+                    }
+                }
+                0x29u8 => {
+                    self.i = vx as u16 * 5;
+                }
+                _ => panic!("OpCode {:#04x}{} not implemented!", op_code.op, op_code.nn),
+            },
             _ => panic!("OpCode {:#04x} not implemented!", op_code.op),
         }
     }
