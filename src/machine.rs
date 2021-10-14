@@ -181,6 +181,12 @@ impl Machine {
                 0x29u8 => {
                     self.i = vx as u16 * 5;
                 }
+                0x33u8 => {
+                    let digits = self.digits_from_number(vx);
+                    self.memory[usize::from(self.i)] = digits[0];
+                    self.memory[usize::from(self.i + 1)] = digits[1];
+                    self.memory[usize::from(self.i + 2)] = digits[2];
+                }
                 _ => panic!("OpCode {:#04x}{} not implemented!", op_code.op, op_code.nn),
             },
             _ => panic!("OpCode {:#04x} not implemented!", op_code.op),
@@ -273,5 +279,13 @@ impl Machine {
 
     pub fn keyup(self: &mut Machine, key: usize) {
         self.keypad[key] = false;
+    }
+
+    fn digits_from_number(self: &mut Machine, n: u8) -> Vec<u8> {
+        let third = n % 10;
+        let second = (n % 100) / 10;
+        let first = n / 100;
+
+        vec![first, second, third]
     }
 }
