@@ -168,6 +168,19 @@ impl Machine {
             0xDu8 => {
                 self.draw_on_display(op_code);
             }
+            0xEu8 => match op_code.nn {
+                0x9Eu8 => {
+                    if self.keypad[usize::from(vx)] && vx < 16 {
+                        self.pc += 2;
+                    }
+                }
+                0xA1u8 => {
+                    if !self.keypad[usize::from(vx)] && vx < 16 {
+                        self.pc += 2;
+                    }
+                }
+                _ => panic!("OpCode {:#04x}{} not implemented!", op_code.op, op_code.nn),
+            },
             0xFu8 => match op_code.nn {
                 0x07u8 => {
                     self.register_vx(&op_code, self.delay_timer);
