@@ -169,6 +169,9 @@ impl Machine {
                             self.pc -= 2;
                         }
                     }
+                    0x29u8 => {
+                        self.i = vx as u16 * 5;
+                    }
                     _ => panic!("OpCode {:#04x}{} not implemented!", op_code.op, op_code.nn),
                 },
                 _ => panic!("OpCode {:#04x}{} not implemented!", op_code.op, op_code.n),
