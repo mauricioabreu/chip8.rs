@@ -32,6 +32,7 @@ pub struct Machine {
     delay_timer: u8,
     sound_timer: u8,
     keypad: [bool; 16],
+    stack: Vec<u16>,
 }
 
 impl Machine {
@@ -45,6 +46,7 @@ impl Machine {
             delay_timer: 0,
             sound_timer: 0,
             keypad: [false; 16],
+            stack: Vec::new(),
         };
 
         for (n, font) in FONTS.iter().enumerate() {
@@ -76,11 +78,25 @@ impl Machine {
 
         match op_code.op {
             0u8 => {
-                println!("00E0: clear screen");
-                self.display = [[false; 32]; 64];
+                match op_code.n {
+                    0u8 => {
+                        println!("00E0: clear screen");
+                        self.display = [[false; 32]; 64];
+                    }
+                    0xEu8 => {
+                        self.pc = self.stack.pop().expect("Stack is empty");
+                        println!("00EE: return from subroutine {}", self.pc)
+                    }
+                    _ => panic!("OpCode {:#04x}{} not implemented!", op_code.op, op_code.n),
+                }
             }
             0x1u8 => {
                 println!("00EE: jump to {}", op_code.nnn);
+                self.pc = op_code.nnn;
+            }
+            0x2u8 => {
+                println!("2NNN: set PC to NNN {}", op_code.nnn);
+                self.stack.push(self.pc);
                 self.pc = op_code.nnn;
             }
             0x3u8 => {
