@@ -157,7 +157,7 @@ impl Machine {
                 }
                 0x7u8 => {
                     self.register_vx(&op_code, vy.wrapping_sub(vx));
-                    self.v[0xF] = usize::from(vx > vy) as u8;
+                    self.v[0xF] = usize::from(vy > vx) as u8;
                 }
                 0x6u8 => {
                     self.register_vx(&op_code, vx >> 1); // shift 1 bit right
