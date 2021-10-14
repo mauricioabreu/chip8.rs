@@ -1,4 +1,5 @@
 use crate::op_code::OpCode;
+use rand::Rng;
 
 const DISPLAY_WIDTH: usize = 64;
 const DISPLAY_HEIGHT: usize = 32;
@@ -155,6 +156,14 @@ impl Machine {
             0xAu8 => {
                 println!("ANNN: set index register I {}", op_code.nnn);
                 self.i = op_code.nnn;
+            }
+            0xBu8 => {
+                self.pc = op_code.nnn + u16::from(self.v[0]);
+            }
+            0xCu8 => {
+                println!("CXNN: set random value in VX");
+                let rand_number: u8 = rand::thread_rng().gen();
+                self.register_vx(&op_code, op_code.nn & rand_number);
             }
             0xDu8 => {
                 self.draw_on_display(op_code);
