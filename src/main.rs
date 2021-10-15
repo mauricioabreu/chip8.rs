@@ -1,4 +1,4 @@
-use keypad::*;
+use keypad::scan_key;
 use machine::Machine;
 use std::env;
 use std::fs::File;
@@ -42,7 +42,7 @@ fn main() {
                     ..
                 } => {
                     if let Some(keyindex) = scan_key(keycode) {
-                        machine.keydown(keyindex)
+                        machine.keydown(keyindex);
                     }
                 }
                 Event::KeyUp {
@@ -50,7 +50,7 @@ fn main() {
                     ..
                 } => {
                     if let Some(keyindex) = scan_key(keycode) {
-                        machine.keyup(keyindex)
+                        machine.keyup(keyindex);
                     }
                 }
                 _ => {}

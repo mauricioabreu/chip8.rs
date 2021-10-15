@@ -85,7 +85,7 @@ impl Machine {
                     }
                     0xEu8 => {
                         self.pc = self.stack.pop().expect("Stack is empty");
-                        println!("00EE: return from subroutine {}", self.pc)
+                        println!("00EE: return from subroutine {}", self.pc);
                     }
                     _ => panic!("OpCode {:#04x}{} not implemented!", op_code.op, op_code.n),
                 }
@@ -228,10 +228,10 @@ impl Machine {
                     }
                 }
                 0x29u8 => {
-                    self.i = vx as u16 * 5;
+                    self.i = u16::from(vx) * 5;
                 }
                 0x33u8 => {
-                    let digits = self.digits_from_number(vx);
+                    let digits = digits_from_number(vx);
                     self.memory[usize::from(self.i)] = digits[0];
                     self.memory[usize::from(self.i + 1)] = digits[1];
                     self.memory[usize::from(self.i + 2)] = digits[2];
@@ -294,7 +294,7 @@ impl Machine {
                 break;
             }
 
-            let sprite = self.memory[usize::from(self.i + row as u16)];
+            let sprite = self.memory[usize::from(self.i + u16::from(row))];
 
             for column in 0..8 {
                 let x_coord = start_x + column;
@@ -339,12 +339,12 @@ impl Machine {
     pub fn keyup(self: &mut Machine, key: usize) {
         self.keypad[key] = false;
     }
+}
 
-    fn digits_from_number(self: &mut Machine, n: u8) -> Vec<u8> {
-        let third = n % 10;
-        let second = (n % 100) / 10;
-        let first = n / 100;
+fn digits_from_number(n: u8) -> Vec<u8> {
+    let third = n % 10;
+    let second = (n % 100) / 10;
+    let first = n / 100;
 
-        vec![first, second, third]
-    }
+    vec![first, second, third]
 }
