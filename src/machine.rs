@@ -207,6 +207,9 @@ impl Machine {
                 0x18u8 => {
                     self.sound_timer = vx;
                 }
+                0x1Eu8 => {
+                    self.i += u16::from(vx);
+                }
                 0x0Au8 => {
                     // Block instruction and wait for key input.
                     // If a key is not pressed, the PC should be decremented
