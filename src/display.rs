@@ -29,7 +29,7 @@ impl Display {
 
         Self {
             canvas,
-            scale: scale,
+            scale,
             bg_color: Color::RGB(0, 0, 0),
             fg_color: Color::RGB(255, 255, 255),
         }
