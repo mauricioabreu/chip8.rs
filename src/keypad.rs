@@ -1,7 +1,7 @@
 use sdl2::keyboard::Keycode;
 
 pub fn scan_key(keycode: Keycode) -> Option<usize> {
-    return match keycode {
+    match keycode {
         // numbers
         Keycode::Num1 => Some(0),
         Keycode::Num2 => Some(1),
@@ -23,5 +23,5 @@ pub fn scan_key(keycode: Keycode) -> Option<usize> {
         Keycode::V => Some(15),
 
         _ => Option::None,
-    };
+    }
 }
