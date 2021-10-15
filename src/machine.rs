@@ -163,7 +163,7 @@ impl Machine {
                     self.register_vx(&op_code, vx >> 1); // shift 1 bit right
                     self.v[0xF] = usize::from(vx & 0b00000001u8 != 0) as u8;
                 }
-                0x8u8 => {
+                0xEu8 => {
                     self.register_vx(&op_code, vx << 1); // shift 1 bit left
                     self.v[0xF] = usize::from(vx & 0b10000000u8 != 0) as u8;
                 }
