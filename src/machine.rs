@@ -72,7 +72,7 @@ impl Machine {
         op_code
     }
 
-    pub fn execute_op(self: &mut Machine, op_code: OpCode) {
+    pub fn execute_op(self: &mut Machine, op_code: &OpCode) {
         let vx = self.fetch_vx(&op_code);
         let vy = self.fetch_vy(&op_code);
 
@@ -182,7 +182,7 @@ impl Machine {
                 self.register_vx(&op_code, op_code.nn & rand_number);
             }
             0xD_u8 => {
-                self.draw_on_display(op_code);
+                self.draw_on_display(&op_code);
             }
             0xE_u8 => match op_code.nn {
                 0x9E_u8 => {
@@ -268,7 +268,7 @@ impl Machine {
         &self.display
     }
 
-    fn draw_on_display(self: &mut Machine, op_code: OpCode) {
+    fn draw_on_display(self: &mut Machine, op_code: &OpCode) {
         /* Draw on display in the register using the vx, vy coordinates.
 
         If the current pixel in the sprite row is on and the pixel

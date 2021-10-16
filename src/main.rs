@@ -59,7 +59,7 @@ fn main() {
 
         if Instant::now() - last_op_time > Duration::from_millis(2) {
             let op = machine.decode_op();
-            machine.execute_op(op);
+            machine.execute_op(&op);
             last_op_time = Instant::now();
         }
 
