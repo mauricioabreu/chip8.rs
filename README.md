@@ -31,7 +31,7 @@ OpCodes tested with this ROM:
 ANNN	8XY4	1NNN
 ```
 
-[BC test](https://github.com/daniel5151/AC8E/blob/master/roms/bc_test.txt)
+[BC_test.ch8](https://github.com/daniel5151/AC8E/blob/master/roms/bc_test.txt)
 
 This ROM tests conditional jumps, the mathematical and logical operations of chip-8
 
