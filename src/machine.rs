@@ -56,7 +56,7 @@ impl Machine {
         machine
     }
 
-    pub fn load_rom(self: &mut Machine, data: Vec<u8>) {
+    pub fn load_rom(self: &mut Machine, data: &[u8]) {
         for (i, b) in data.iter().enumerate() {
             self.memory[0x200 + i] = *b;
         }
