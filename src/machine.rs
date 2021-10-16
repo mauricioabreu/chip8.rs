@@ -73,8 +73,8 @@ impl Machine {
     }
 
     pub fn execute_op(self: &mut Machine, op_code: &OpCode) {
-        let vx = self.fetch_vx(&op_code);
-        let vy = self.fetch_vy(&op_code);
+        let vx = self.fetch_vx(op_code);
+        let vy = self.fetch_vy(op_code);
 
         match op_code.op {
             0_u8 => {
@@ -125,46 +125,46 @@ impl Machine {
             }
             0x6_u8 => {
                 println!("6XNN: set value {} to Vx{}", op_code.nn, op_code.x);
-                self.register_vx(&op_code, op_code.nn);
+                self.register_vx(op_code, op_code.nn);
             }
             0x7_u8 => {
                 println!(
                     "7XNN: add the value {} to Vx({}){}",
                     op_code.nn, vx, op_code.x
                 );
-                self.register_vx(&op_code, vx.wrapping_add(op_code.nn));
+                self.register_vx(op_code, vx.wrapping_add(op_code.nn));
             }
             0x8_u8 => match op_code.n {
                 0x0_u8 => {
-                    self.register_vx(&op_code, vy);
+                    self.register_vx(op_code, vy);
                 }
                 0x1_u8 => {
-                    self.register_vx(&op_code, vx | vy);
+                    self.register_vx(op_code, vx | vy);
                 }
                 0x2_u8 => {
-                    self.register_vx(&op_code, vx & vy);
+                    self.register_vx(op_code, vx & vy);
                 }
                 0x3_u8 => {
-                    self.register_vx(&op_code, vx ^ vy);
+                    self.register_vx(op_code, vx ^ vy);
                 }
                 0x4_u8 => {
-                    self.register_vx(&op_code, vx.wrapping_add(vy));
-                    self.v[0xF] = usize::from(self.fetch_vx(&op_code) < vx) as u8;
+                    self.register_vx(op_code, vx.wrapping_add(vy));
+                    self.v[0xF] = usize::from(self.fetch_vx(op_code) < vx) as u8;
                 }
                 0x5_u8 => {
-                    self.register_vx(&op_code, vx.wrapping_sub(vy));
+                    self.register_vx(op_code, vx.wrapping_sub(vy));
                     self.v[0xF] = usize::from(vx > vy) as u8;
                 }
                 0x7_u8 => {
-                    self.register_vx(&op_code, vy.wrapping_sub(vx));
+                    self.register_vx(op_code, vy.wrapping_sub(vx));
                     self.v[0xF] = usize::from(vy > vx) as u8;
                 }
                 0x6_u8 => {
-                    self.register_vx(&op_code, vx >> 1); // shift 1 bit right
+                    self.register_vx(op_code, vx >> 1); // shift 1 bit right
                     self.v[0xF] = usize::from(vx & 0b0000_0001_u8 != 0) as u8;
                 }
                 0xE_u8 => {
-                    self.register_vx(&op_code, vx << 1); // shift 1 bit left
+                    self.register_vx(op_code, vx << 1); // shift 1 bit left
                     self.v[0xF] = usize::from(vx & 0b1000_0000_u8 != 0) as u8;
                 }
                 _ => panic!("OpCode {:#04x}{} not implemented!", op_code.op, op_code.n),
@@ -179,10 +179,10 @@ impl Machine {
             0xC_u8 => {
                 println!("CXNN: set random value in VX");
                 let rand_number: u8 = rand::thread_rng().gen();
-                self.register_vx(&op_code, op_code.nn & rand_number);
+                self.register_vx(op_code, op_code.nn & rand_number);
             }
             0xD_u8 => {
-                self.draw_on_display(&op_code);
+                self.draw_on_display(op_code);
             }
             0xE_u8 => match op_code.nn {
                 0x9E_u8 => {
@@ -199,7 +199,7 @@ impl Machine {
             },
             0xF_u8 => match op_code.nn {
                 0x07_u8 => {
-                    self.register_vx(&op_code, self.delay_timer);
+                    self.register_vx(op_code, self.delay_timer);
                 }
                 0x15_u8 => {
                     self.delay_timer = vx;
@@ -217,7 +217,7 @@ impl Machine {
                     let mut key_pressed = false;
                     for (i, k) in self.keypad.iter().enumerate() {
                         if *k {
-                            self.register_vx(&op_code, i as u8); // set index of first pressed key
+                            self.register_vx(op_code, i as u8); // set index of first pressed key
                             key_pressed = true;
                             break;
                         }
@@ -275,8 +275,8 @@ impl Machine {
         at coordinates X,Y on the screen is also on,
         turn off the pixel (XOR).
         */
-        let vx = self.fetch_vx(&op_code);
-        let vy = self.fetch_vy(&op_code);
+        let vx = self.fetch_vx(op_code);
+        let vy = self.fetch_vy(op_code);
         println!("DXYN: draw {} on screen at Vx{} Vy{}", op_code.n, vx, vy);
 
         // handle wrapping
