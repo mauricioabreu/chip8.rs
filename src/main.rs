@@ -13,14 +13,18 @@ mod keypad;
 mod machine;
 mod op_code;
 
-fn main() {
-    let args: Vec<String> = env::args().collect();
-    let filename = args.get(1).unwrap();
+fn data_from_file(filename: &str) -> Vec<u8> {
     let mut f = File::open(filename).unwrap();
     let mut data = Vec::<u8>::new();
     f.read_to_end(&mut data).expect("File not found...");
+    data
+}
+
+fn main() {
+    let args: Vec<String> = env::args().collect();
+    let filename = args.get(1).unwrap();
     let mut machine = Machine::new();
-    machine.load_rom(&data);
+    machine.load_rom(&data_from_file(filename));
     let sdl_context = sdl2::init().unwrap();
     let mut display = display::Display::new(&sdl_context);
 
