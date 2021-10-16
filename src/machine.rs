@@ -77,140 +77,140 @@ impl Machine {
         let vy = self.fetch_vy(&op_code);
 
         match op_code.op {
-            0u8 => {
+            0_u8 => {
                 match op_code.n {
-                    0u8 => {
+                    0_u8 => {
                         println!("00E0: clear screen");
                         self.display = [[false; 32]; 64];
                     }
-                    0xEu8 => {
+                    0xE_u8 => {
                         self.pc = self.stack.pop().expect("Stack is empty");
                         println!("00EE: return from subroutine {}", self.pc);
                     }
                     _ => panic!("OpCode {:#04x}{} not implemented!", op_code.op, op_code.n),
                 }
             }
-            0x1u8 => {
+            0x1_u8 => {
                 println!("00EE: jump to {}", op_code.nnn);
                 self.pc = op_code.nnn;
             }
-            0x2u8 => {
+            0x2_u8 => {
                 println!("2NNN: set PC to NNN {}", op_code.nnn);
                 self.stack.push(self.pc);
                 self.pc = op_code.nnn;
             }
-            0x3u8 => {
+            0x3_u8 => {
                 println!("3XNN: skip when Vx{} == NN{}", vx, op_code.nn);
                 if vx == op_code.nn {
                     self.pc += 2;
                 }
             }
-            0x4u8 => {
+            0x4_u8 => {
                 println!("4XNN: skip when Vx{} != NN{}", vx, op_code.nn);
                 if vx != op_code.nn {
                     self.pc += 2;
                 }
             }
-            0x5u8 => {
+            0x5_u8 => {
                 println!("5XY0: skip when Vx{} == Vy{}", vx, vy);
                 if vx == vy {
                     self.pc += 2;
                 }
             }
-            0x9u8 => {
+            0x9_u8 => {
                 println!("9XY0: skip when Vx{} != Vy{}", vx, vy);
                 if vx != vy {
                     self.pc += 2;
                 }
             }
-            0x6u8 => {
+            0x6_u8 => {
                 println!("6XNN: set value {} to Vx{}", op_code.nn, op_code.x);
                 self.register_vx(&op_code, op_code.nn);
             }
-            0x7u8 => {
+            0x7_u8 => {
                 println!(
                     "7XNN: add the value {} to Vx({}){}",
                     op_code.nn, vx, op_code.x
                 );
                 self.register_vx(&op_code, vx.wrapping_add(op_code.nn));
             }
-            0x8u8 => match op_code.n {
-                0x0u8 => {
+            0x8_u8 => match op_code.n {
+                0x0_u8 => {
                     self.register_vx(&op_code, vy);
                 }
-                0x1u8 => {
+                0x1_u8 => {
                     self.register_vx(&op_code, vx | vy);
                 }
-                0x2u8 => {
+                0x2_u8 => {
                     self.register_vx(&op_code, vx & vy);
                 }
-                0x3u8 => {
+                0x3_u8 => {
                     self.register_vx(&op_code, vx ^ vy);
                 }
-                0x4u8 => {
+                0x4_u8 => {
                     self.register_vx(&op_code, vx.wrapping_add(vy));
                     self.v[0xF] = usize::from(self.fetch_vx(&op_code) < vx) as u8;
                 }
-                0x5u8 => {
+                0x5_u8 => {
                     self.register_vx(&op_code, vx.wrapping_sub(vy));
                     self.v[0xF] = usize::from(vx > vy) as u8;
                 }
-                0x7u8 => {
+                0x7_u8 => {
                     self.register_vx(&op_code, vy.wrapping_sub(vx));
                     self.v[0xF] = usize::from(vy > vx) as u8;
                 }
-                0x6u8 => {
+                0x6_u8 => {
                     self.register_vx(&op_code, vx >> 1); // shift 1 bit right
-                    self.v[0xF] = usize::from(vx & 0b00000001u8 != 0) as u8;
+                    self.v[0xF] = usize::from(vx & 0b0000_0001_u8 != 0) as u8;
                 }
-                0xEu8 => {
+                0xE_u8 => {
                     self.register_vx(&op_code, vx << 1); // shift 1 bit left
-                    self.v[0xF] = usize::from(vx & 0b10000000u8 != 0) as u8;
+                    self.v[0xF] = usize::from(vx & 0b1000_0000_u8 != 0) as u8;
                 }
                 _ => panic!("OpCode {:#04x}{} not implemented!", op_code.op, op_code.n),
             },
-            0xAu8 => {
+            0xA_u8 => {
                 println!("ANNN: set index register I {}", op_code.nnn);
                 self.i = op_code.nnn;
             }
-            0xBu8 => {
+            0xB_u8 => {
                 self.pc = op_code.nnn + u16::from(self.v[0]);
             }
-            0xCu8 => {
+            0xC_u8 => {
                 println!("CXNN: set random value in VX");
                 let rand_number: u8 = rand::thread_rng().gen();
                 self.register_vx(&op_code, op_code.nn & rand_number);
             }
-            0xDu8 => {
+            0xD_u8 => {
                 self.draw_on_display(op_code);
             }
-            0xEu8 => match op_code.nn {
-                0x9Eu8 => {
+            0xE_u8 => match op_code.nn {
+                0x9E_u8 => {
                     if self.keypad[usize::from(vx)] && vx < 16 {
                         self.pc += 2;
                     }
                 }
-                0xA1u8 => {
+                0xA1_u8 => {
                     if !self.keypad[usize::from(vx)] && vx < 16 {
                         self.pc += 2;
                     }
                 }
                 _ => panic!("OpCode {:#04x}{} not implemented!", op_code.op, op_code.nn),
             },
-            0xFu8 => match op_code.nn {
-                0x07u8 => {
+            0xF_u8 => match op_code.nn {
+                0x07_u8 => {
                     self.register_vx(&op_code, self.delay_timer);
                 }
-                0x15u8 => {
+                0x15_u8 => {
                     self.delay_timer = vx;
                 }
-                0x18u8 => {
+                0x18_u8 => {
                     self.sound_timer = vx;
                 }
-                0x1Eu8 => {
+                0x1E_u8 => {
                     self.i += u16::from(vx);
                 }
-                0x0Au8 => {
+                0x0A_u8 => {
                     // Block instruction and wait for key input.
                     // If a key is not pressed, the PC should be decremented
                     // because we increment PC every instruction we fetch.
@@ -227,21 +227,21 @@ impl Machine {
                         self.pc -= 2;
                     }
                 }
-                0x29u8 => {
+                0x29_u8 => {
                     self.i = u16::from(vx) * 5;
                 }
-                0x33u8 => {
+                0x33_u8 => {
                     let digits = digits_from_number(vx);
                     self.memory[usize::from(self.i)] = digits[0];
                     self.memory[usize::from(self.i + 1)] = digits[1];
                     self.memory[usize::from(self.i + 2)] = digits[2];
                 }
-                0x55u8 => {
+                0x55_u8 => {
                     for i in 0..usize::from(op_code.x + 1) {
                         self.memory[usize::from(self.i) + i] = self.v[i];
                     }
                 }
-                0x65u8 => {
+                0x65_u8 => {
                     for i in 0..usize::from(op_code.x + 1) {
                         self.v[i] = self.memory[usize::from(self.i) + i];
                     }
