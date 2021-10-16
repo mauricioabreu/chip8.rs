@@ -8,14 +8,14 @@ pub struct OpCode {
 }
 
 impl OpCode {
-    pub fn from_bytes(fbyte: u8, sbyte: u8) -> Self {
+    pub fn from_bytes(f_byte: u8, s_byte: u8) -> Self {
         Self {
-            op: (fbyte >> 4) & 0xF,
-            x: fbyte & 0xF,
-            y: (sbyte >> 4) & 0xF,
-            n: sbyte & 0xF,
-            nn: sbyte,
-            nnn: (u16::from(fbyte & 0xF) << 8) | u16::from(sbyte),
+            op: (f_byte >> 4) & 0xF,
+            x: f_byte & 0xF,
+            y: (s_byte >> 4) & 0xF,
+            n: s_byte & 0xF,
+            nn: s_byte,
+            nnn: (u16::from(f_byte & 0xF) << 8) | u16::from(s_byte),
         }
     }
 }
