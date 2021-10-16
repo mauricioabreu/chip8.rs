@@ -316,10 +316,10 @@ impl Machine {
     fn debug_draw(self: &mut Machine) {
         for y in 0..32 {
             for x in 0..64 {
-                if !self.display[x][y] {
-                    print!("_");
-                } else {
+                if self.display[x][y] {
                     print!("#");
+                } else {
+                    print!("-");
                 }
             }
             println!();
