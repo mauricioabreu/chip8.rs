@@ -31,6 +31,14 @@ OpCodes tested with this ROM:
 ANNN	8XY4	1NNN
 ```
 
+[BC test](https://github.com/daniel5151/AC8E/blob/master/roms/bc_test.txt)
+
+This ROM tests conditional jumps, the mathematical and logical operations of chip-8
+
+<img src="img/BC_test.png" widh="512" height="256">
+
+Thanks to BestCoder (bestcoder@ymail.com) for the `BC_test.ch8` ROM
+
 ## Keypad
 
 The keypad used has 16 keys. There is more than one layout out there but this emulator uses the following:
@@ -41,6 +49,3 @@ The keypad used has 16 keys. There is more than one layout out there but this em
 | Q | W | E | R |
 | A | S | D | F |
 | Z | X | C | V |
-
-
-Thanks to BestCoder (bestcoder@ymail.com) for the `BC_test.ch8` rom.
