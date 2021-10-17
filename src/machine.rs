@@ -56,13 +56,13 @@ impl Machine {
         machine
     }
 
-    pub fn load_rom(self: &mut Machine, data: &[u8]) {
+    pub fn load_rom(&mut self, data: &[u8]) {
         for (i, b) in data.iter().enumerate() {
             self.memory[0x200 + i] = *b;
         }
     }
 
-    pub fn decode_op(self: &mut Machine) -> OpCode {
+    pub fn decode_op(&mut self) -> OpCode {
         let op_code = OpCode::from_bytes(
             self.memory[usize::from(self.pc)],
             self.memory[usize::from(self.pc + 1)],
@@ -72,7 +72,7 @@ impl Machine {
         op_code
     }
 
-    pub fn execute_op(self: &mut Machine, op_code: &OpCode) {
+    pub fn execute_op(&mut self, op_code: &OpCode) {
         let vx = self.fetch_vx(op_code);
         let vy = self.fetch_vy(op_code);
 
@@ -252,15 +252,15 @@ impl Machine {
         }
     }
 
-    fn register_vx(self: &mut Machine, op_code: &OpCode, value: u8) {
+    fn register_vx(&mut self, op_code: &OpCode, value: u8) {
         self.v[usize::from(op_code.x)] = value;
     }
 
-    fn fetch_vx(self: &mut Machine, op_code: &OpCode) -> u8 {
+    fn fetch_vx(&mut self, op_code: &OpCode) -> u8 {
         self.v[usize::from(op_code.x)]
     }
 
-    fn fetch_vy(self: &mut Machine, op_code: &OpCode) -> u8 {
+    fn fetch_vy(&mut self, op_code: &OpCode) -> u8 {
         self.v[usize::from(op_code.y)]
     }
 
@@ -268,7 +268,7 @@ impl Machine {
         &self.display
     }
 
-    fn draw_on_display(self: &mut Machine, op_code: &OpCode) {
+    fn draw_on_display(&mut self, op_code: &OpCode) {
         /* Draw on display in the register using the vx, vy coordinates.
 
         If the current pixel in the sprite row is on and the pixel
@@ -313,7 +313,7 @@ impl Machine {
         self.debug_draw();
     }
 
-    fn debug_draw(self: &mut Machine) {
+    fn debug_draw(&mut self) {
         for y in 0..32 {
             for x in 0..64 {
                 if self.display[x][y] {
@@ -326,17 +326,17 @@ impl Machine {
         }
     }
 
-    pub fn tick(self: &mut Machine) {
+    pub fn tick(&mut self) {
         if self.delay_timer > 0 {
             self.delay_timer -= 1;
         }
     }
 
-    pub fn keydown(self: &mut Machine, key: usize) {
+    pub fn keydown(&mut self, key: usize) {
         self.keypad[key] = true;
     }
 
-    pub fn keyup(self: &mut Machine, key: usize) {
+    pub fn keyup(&mut self, key: usize) {
         self.keypad[key] = false;
     }
 }

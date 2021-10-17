@@ -35,7 +35,7 @@ impl Display {
         }
     }
 
-    pub fn draw(self: &mut Display, screen: &[[bool; 32]; 64]) {
+    pub fn draw(&mut self, screen: &[[bool; 32]; 64]) {
         self.canvas.set_draw_color(self.bg_color);
         self.canvas.clear();
         self.canvas.set_draw_color(self.fg_color);
