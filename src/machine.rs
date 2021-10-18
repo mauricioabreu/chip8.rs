@@ -228,7 +228,8 @@ impl Machine {
                     }
                 }
                 0x29_u8 => {
-                    self.i = u16::from(vx) * 5;
+                    let character = u16::from(self.fetch_vx(op_code));
+                    self.i = 0x50u16 + (5u16 * character); // start from 0x50 and pick 5 lines
                 }
                 0x33_u8 => {
                     let digits = digits_from_number(vx);
