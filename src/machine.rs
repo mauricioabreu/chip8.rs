@@ -265,7 +265,7 @@ impl Machine {
         self.v[usize::from(op_code.y)]
     }
 
-    pub fn read_display(&self) -> &[[bool; 32]; 64] {
+    pub const fn read_display(&self) -> &[[bool; 32]; 64] {
         &self.display
     }
 

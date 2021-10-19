@@ -1,6 +1,6 @@
 use sdl2::keyboard::Keycode;
 
-pub fn scan_key(keycode: Keycode) -> Option<usize> {
+pub const fn scan_key(keycode: Keycode) -> Option<usize> {
     match keycode {
         // numbers
         Keycode::Num1 => Some(0),
