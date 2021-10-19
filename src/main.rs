@@ -27,10 +27,6 @@ fn main() {
     machine.load_rom(&data_from_file(filename));
     let sdl_context = sdl2::init().unwrap();
     let mut display = display::Display::new(&sdl_context);
-
-    let mut last_op_time = Instant::now();
-    let mut last_display_time = Instant::now();
-
     let mut events = sdl_context.event_pump().unwrap();
 
     'event_loop: loop {
@@ -61,17 +57,12 @@ fn main() {
             }
         }
 
-        if Instant::now() - last_op_time > Duration::from_millis(2) {
+        for _ in 0..10 {
             let op = machine.decode_op();
             machine.execute_op(&op);
-            last_op_time = Instant::now();
         }
 
-        if Instant::now() - last_display_time > Duration::from_millis(10) {
-            display.draw(machine.read_display());
-            last_display_time = Instant::now();
-        }
-
+        display.draw(machine.read_display());
         machine.tick();
     }
 }
