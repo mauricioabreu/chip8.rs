@@ -331,6 +331,10 @@ impl Machine {
         if self.delay_timer > 0 {
             self.delay_timer -= 1;
         }
+
+        if self.sound_timer > 0 {
+            self.sound_timer -= 1;
+        }
     }
 
     pub fn keydown(&mut self, key: usize) {
