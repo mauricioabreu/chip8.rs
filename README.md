@@ -51,7 +51,7 @@ The keypad used has 16 keys. There is more than one layout out there but this em
 
 ## Playing other ROMs
 
-You can find a plenty of ROMs [here](https://www.zophar.net/pdroms/chip8/chip-8-games-pack.html)
+There is plenty of ROMs [here](https://www.zophar.net/pdroms/chip8/chip-8-games-pack.html)
 
 They are public domain. You can download and use this emulator to play chip-8 games
 
