@@ -3,7 +3,6 @@ use machine::Machine;
 use std::env;
 use std::fs::File;
 use std::io::Read;
-use std::time::{Duration, Instant};
 
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
