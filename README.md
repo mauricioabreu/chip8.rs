@@ -1,6 +1,6 @@
 # chip8.rs
 
-> chip8 written in rust lang
+> chip-8 written in rust lang
 
 ## Usage
 
@@ -38,7 +38,6 @@ This ROM tests conditional jumps, the mathematical and logical operations of chi
 <img src="img/BC_test.png" widh="512" height="256">
 
 Thanks to BestCoder (bestcoder@ymail.com) for the `BC_test.ch8` ROM
-
 ## Keypad
 
 The keypad used has 16 keys. There is more than one layout out there but this emulator uses the following:
@@ -49,3 +48,11 @@ The keypad used has 16 keys. There is more than one layout out there but this em
 | Q | W | E | R |
 | A | S | D | F |
 | Z | X | C | V |
+
+## Playing other ROMs
+
+You can find a plenty of ROMs [here](https://www.zophar.net/pdroms/chip8/chip-8-games-pack.html)
+
+They are public domain. You can download and use this emulator to play chip-8 games
+
+<img src="img/invaders.png" widh="512" height="256">
